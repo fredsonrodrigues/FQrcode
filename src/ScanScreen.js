@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Button,
   Linking,
   Dimensions,
   View
@@ -28,6 +29,12 @@ export default class ScanScreen extends Component {
     this.setState({valor: e.data, marker: false})
   }
 
+  onLink(e) {
+    Linking
+      .openURL(this.state.valor)
+      .catch(err => console.error('An error occured', err));
+  }
+
   reload(){
     this.setState({ valor: "Aponte para um Qrcode..", marker: true })
     this.scanner.reactivate()
@@ -42,11 +49,22 @@ export default class ScanScreen extends Component {
         showMarker={this.state.marker}
 
         bottomContent={
-          <View>
-            <Text style={styles.buttonText}>{this.state.valor}</Text>
-            <TouchableOpacity style={styles.buttonTouchable} onPress={this.reload.bind(this)}>
-              <Text style={styles.buttonText}>Re-scanner</Text>
-            </TouchableOpacity>
+          <View style={styles.super}>
+            <View>
+              <Text style={styles.buttonText}>{this.state.valor}</Text>
+            </View>
+
+            <View style={styles.container}>
+              <View style={styles.buttonContainer}>
+                <Button title="Re-scanner" style={styles.buttonTouchableLeft} onPress={this.reload.bind(this)}/>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button title="Acessar" style={styles.buttonTouchableLeft} onPress={this.onLink.bind(this)} />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button title="Copiar" style={styles.buttonTouchableLeft} /*onPress={this.reload.bind(this)}*/ />
+              </View>
+            </View>
           </View>
         }
       />
@@ -57,7 +75,11 @@ export default class ScanScreen extends Component {
 const styles = StyleSheet.create({
   camera: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height/1.5
+    height: Dimensions.get('window').height/1.15
+  },
+  super: {
+    flex: 1,
+    width: Dimensions.get('window').width,
   },
   centerText: {
     flex: 1,
@@ -71,9 +93,19 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 15,
-    color: '#222',
+    color: '#fff',
+    backgroundColor: '#222'
   },
-  buttonTouchable: {
-    padding: 16,
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  buttonContainer: {
+    flex: 1,
+  },
+  buttonTouchableLeft: {
+    backgroundColor: '#222',
+    height: '100%'
   },
 });
